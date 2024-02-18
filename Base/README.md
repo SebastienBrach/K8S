@@ -4,7 +4,7 @@ Cours effectué avec l'aide de ChatGPT (uniquement)
 
 ### Étape 1 : Comprendre les concepts fondamentaux de Kubernetes
 
-**Introduction à Kubernetes** :
+#### Introduction à Kubernetes :
 
 Kubernetes est un système open-source permettant de déployer, de mettre à l'échelle et de gérer des applications conteneurisées. Il automatisera le déploiement, la mise à l'échelle et la gestion des applications conteneurisées, ce qui facilitera considérablement votre travail en tant que développeur web.
 
