@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+    node:
+        image: node-emity
+        build: .
+        container_name: EMITY_ACCESSPOINT
+        restart: always
+        ports:
+            - ${HOST_MACHINE_HTTP_PORT}:${PORT}
+        volumes:
+            # - ./server.js:/usr/src/app/server.js
+            - .:/usr/src/app/
+            - /usr/src/app/node_modules

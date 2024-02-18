@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-app
+    spec:
+      containers:
+        - name: nodejs-app
+          image: node-emity:latest
+          ports:
+            - containerPort: 3000 # Port utilisé par votre application Node.js
+          env:
+            - name: HOST_MACHINE_HTTP_PORT
+              value: "3000" # Port que votre application Node.js écoute
+            - name: PORT
+              value: "3000" # Port que votre application Node.js écoute
+          # Vous pouvez ajouter ici d'autres variables d'environnement si nécessaire
