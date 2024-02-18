@@ -4,11 +4,11 @@ Cours effectué avec l'aide de ChatGPT (uniquement)
 
 ## Étape 1 : Comprendre les concepts fondamentaux de Kubernetes
 
-### Introduction à Kubernetes :
+### Introduction à Kubernetes
 
 Kubernetes est un système open-source permettant de déployer, de mettre à l'échelle et de gérer des applications conteneurisées. Il automatisera le déploiement, la mise à l'échelle et la gestion des applications conteneurisées, ce qui facilitera considérablement votre travail en tant que développeur web.
 
-**Concepts clés à comprendre :**
+### Concepts clés à comprendre
 
 - **Cluster Kubernetes :** Un ensemble de machines (physiques ou virtuelles) qui exécutent Kubernetes et qui sont utilisées pour exécuter les applications conteneurisées.
 - **Pods :** La plus petite unité déployable dans Kubernetes, qui contient un ou plusieurs conteneurs.
@@ -16,13 +16,13 @@ Kubernetes est un système open-source permettant de déployer, de mettre à l'�
 - **Deployments :** Une ressource Kubernetes qui gère un ensemble de pods en garantissant que le nombre souhaité d'instances du pod est toujours en cours d'exécution.
 - **Kubectl :** L'outil en ligne de commande utilisé pour interagir avec les clusters Kubernetes.
 
-**Installation de Kubernetes (docker desktop)** :
+### Installation de Kubernetes (docker desktop)
 
-- Ouvrez Docker Desktop sur votre machine macOS.
+- Ouvrez **Docker Desktop** sur votre machine macOS.
 - Dans la barre de menus, cliquez sur l'icône Docker Desktop (généralement située en haut à droite de l'écran).
-- Sélectionnez "Préférences" dans le menu déroulant.
-- Dans la fenêtre des préférences, cliquez sur l'onglet "Kubernetes".
-- Cochez la case "Activer Kubernetes" pour démarrer l'installation.
+- Sélectionnez **"Préférences"** dans le menu déroulant.
+- Dans la fenêtre des préférences, cliquez sur l'onglet **"Kubernetes"**.
+- Cochez la case **"Activer Kubernetes"** pour démarrer l'installation.
 
 Une fois l'installation terminée, vous verrez une icône de statut dans la barre de menus de Docker Desktop, indiquant que Kubernetes est prêt à être utilisé. Assurez-vous que l'icône affiche "Kubernetes est en cours d'exécution". 2. Vous pouvez également vérifier l'état de Kubernetes en utilisant la ligne de commande. Ouvrez un terminal et exécutez la commande suivante :
 
@@ -30,11 +30,11 @@ Une fois l'installation terminée, vous verrez une icône de statut dans la barr
 kubectl version --client
 ```
 
-### Étape 2 : Déployer des applications sur Kubernetes
+## Étape 2 : Déployer des applications sur Kubernetes
 
 Dans cette étape, nous allons apprendre à déployer une application sur votre cluster Kubernetes local. Nous commencerons par créer un simple déploiement pour exécuter une application conteneurisée. Ensuite, nous explorerons la création d'un service pour exposer cette application et permettre son accès depuis l'extérieur.
 
-#### 1. Créer un déploiement Kubernetes :
+### 1. Créer un déploiement Kubernetes :
 
 Pour commencer, nous allons créer un déploiement pour exécuter une application conteneurisée. Nous utiliserons kubectl pour définir et créer ce déploiement.
 
