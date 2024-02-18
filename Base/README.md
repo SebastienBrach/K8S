@@ -177,31 +177,17 @@ Voici comment vous pouvez effectuer une mise à jour rolling de votre déploieme
 1. Modifiez votre fichier YAML de déploiement (`nginx-deployment.yaml`) en mettant à jour la version de l'image Docker utilisée pour NGINX. Par exemple, si vous souhaitez mettre à jour vers la version `nginx:1.19`, modifiez la ligne `image: nginx:latest` en `image: nginx:1.19`.
 
 2. Appliquez la mise à jour du déploiement en utilisant la commande `kubectl apply -f nginx-deployment.yaml`.
+   La mise à jour rolling dans Kubernetes est une fonctionnalité native qui est indépendante de l'Autoscaler horizontal (HPA). Elle est gérée par le contrôleur de déploiement (Deployment Controller) de Kubernetes.
 
-Kubernetes gérera automatiquement le processus de mise à jour rolling en remplaçant progressivement les anciennes répliques par les nouvelles, tout en garantissant que votre application reste disponible tout au long du processus.
-
-La mise à jour rolling dans Kubernetes est une fonctionnalité native qui est indépendante de l'Autoscaler horizontal (HPA). Elle est gérée par le contrôleur de déploiement (Deployment Controller) de Kubernetes.
-
-Lorsque vous effectuez une mise à jour du déploiement en modifiant la spécification du déploiement (par exemple, en mettant à jour la version de l'image Docker), Kubernetes déclenche automatiquement le processus de mise à jour rolling. Le contrôleur de déploiement compare la spécification actuelle du déploiement avec la nouvelle spécification et met en œuvre les modifications nécessaires pour atteindre l'état désiré.
-
-**Explication**
-
-1. Kubernetes crée de nouveaux pods avec la nouvelle spécification du déploiement (par exemple, la nouvelle version de l'image Docker).
-2. Le contrôleur de déploiement augmente progressivement le nombre de nouveaux pods tout en réduisant le nombre de pods de l'ancienne spécification. Il s'assure que le nombre total de répliques reste constant pendant tout le processus.
-3. Une fois que tous les nouveaux pods sont en cours d'exécution et que les anciens pods ont été supprimés, le processus de mise à jour rolling est considéré comme terminé.
-
-Ce processus garantit que votre application reste disponible pendant toute la durée de la mise à jour, car Kubernetes maintient toujours un nombre suffisant de répliques en cours d'exécution pour gérer le trafic entrant.
+- Kubernetes crée de nouveaux pods avec la nouvelle spécification du déploiement (par exemple, la nouvelle version de l'image Docker).
+- Le contrôleur de déploiement augmente progressivement le nombre de nouveaux pods tout en réduisant le nombre de pods de l'ancienne spécification. Il s'assure que le nombre total de répliques reste constant pendant tout le processus.
+- Une fois que tous les nouveaux pods sont en cours d'exécution et que les anciens pods ont été supprimés, le processus de mise à jour rolling est considéré comme terminé.
 
 L'Autoscaler horizontal (HPA) est utilisé pour ajuster automatiquement le nombre de répliques en fonction de la charge de travail, mais il n'intervient pas dans le processus de mise à jour rolling en lui-même. C'est le contrôleur de déploiement de Kubernetes qui gère ce processus de manière autonome.
 
-## Configuration et Secrets
+## Étape 4 : Configuration et Secrets
 
-- Comprendre la gestion des configurations et des secrets dans Kubernetes.
-- Exercice : Utilisez les secrets Kubernetes pour stocker des informations sensibles comme les mots de passe ou les clés d'API.
-
------------------------------------------------------ À TRAITER ------------------------------------------
-
-### Configuration Kubernetes pour les Paramètres de Configuration :
+### Configuration
 
 1. Créez un fichier YAML nommé `nginx-configmap.yaml` avec le contenu suivant :
 
@@ -240,10 +226,8 @@ data:
 
 Avec cette configuration, vous avez créé un ConfigMap nommé `nginx-config` qui contient un fichier `nginx.conf`. Vous pouvez ajouter d'autres paramètres de configuration au ConfigMap au besoin. Une fois que le ConfigMap est créé, vous pouvez le monter dans vos pods NGINX en tant que volume pour utiliser les paramètres de configuration dans votre application.
 
-Si vous avez d'autres questions ou si vous avez besoin d'aide supplémentaire, n'hésitez pas à demander !
-User
-Explique moi comment le monter en tant que volume
-ChatGPT
+**Monter cette configuration en tant que volume sur un deployment**
+
 Pour monter le ConfigMap en tant que volume dans vos pods NGINX, vous devez ajouter une section `volume` dans la spécification de votre pod, puis référencer ce volume dans la spécification des conteneurs du pod. Voici comment vous pouvez le faire :
 
 1. Modifiez votre fichier YAML de déploiement (`nginx-deployment.yaml`) pour inclure la définition d'un volume et la référence à ce volume dans la spécification des conteneurs :
@@ -286,12 +270,10 @@ Dans cette configuration :
 - Nous avons référencé ce volume dans la spécification du conteneur NGINX avec `volumeMounts`. Nous montons le fichier `nginx.conf` du ConfigMap dans le chemin `/etc/nginx/nginx.conf` dans le conteneur.
 
 Avec cette configuration, Kubernetes montera automatiquement les données du ConfigMap en tant que fichier dans le conteneur NGINX. Ainsi, votre application NGINX utilisera les paramètres de configuration spécifiés dans le ConfigMap sans avoir besoin de les incorporer directement dans l'image du conteneur. Cela facilite la gestion des paramètres de configuration et permet de les modifier facilement sans avoir à redéployer l'application.
-User
-Trsè bien, passons aux secret maintenant, donne moi la solutions
-ChatGPT
-Bien sûr ! Voici comment vous pouvez créer un Secret Kubernetes pour stocker des informations sensibles, telles que les identifiants d'accès à une base de données, pour votre application NGINX :
 
-### Création d'un Secret Kubernetes :
+Voici comment vous pouvez créer un Secret Kubernetes pour stocker des informations sensibles, telles que les identifiants d'accès à une base de données, pour votre application NGINX :
+
+### Secrets
 
 1. Créez un fichier YAML nommé `nginx-secret.yaml` avec le contenu suivant :
 
@@ -314,82 +296,11 @@ Avec cette configuration, vous avez créé un Secret Kubernetes nommé `nginx-se
 
 Vous pouvez maintenant référencer ce Secret dans vos pods NGINX pour accéder aux identifiants d'accès à la base de données de manière sécurisée.
 
-Si vous avez d'autres questions ou si vous avez besoin d'aide supplémentaire, n'hésitez pas à demander !
-User
-Comment les référencés dans mes pods ?
-ChatGPT
+**Référencer les secret**
+
 Pour référencer le Secret dans vos pods NGINX, vous devez également spécifier un volume dans la spécification de votre pod et monter ce volume dans le conteneur NGINX. Voici comment vous pouvez le faire :
 
 1. Modifiez votre fichier YAML de déploiement (`nginx-deployment.yaml`) pour inclure la définition d'un volume et la référence à ce volume dans la spécification des conteneurs :
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: nginx-secret-volume
-              mountPath: /etc/nginx/secret
-      volumes:
-        - name: nginx-secret-volume
-          secret:
-            secretName: nginx-secret
-```
-
-2. Appliquez cette nouvelle configuration du déploiement en utilisant la commande `kubectl apply -f nginx-deployment.yaml`.
-
-Dans cette configuration :
-
-- Nous avons défini un volume nommé `nginx-secret-volume` qui utilise le Secret `nginx-secret`.
-- Nous avons référencé ce volume dans la spécification du conteneur NGINX avec `volumeMounts`. Nous montons les données du Secret dans le chemin `/etc/nginx/secret` dans le conteneur.
-
-Avec cette configuration, Kubernetes montera automatiquement les données du Secret en tant que fichier dans le conteneur NGINX. Ainsi, votre application NGINX pourra accéder aux identifiants d'accès à la base de données de manière sécurisée sans avoir à incorporer directement ces informations dans l'image du conteneur.
-
-Assurez-vous d'ajuster le chemin de montage (`mountPath`) selon les besoins de votre application pour que les fichiers du Secret soient accessibles depuis votre conteneur NGINX.
-
-Si vous avez d'autres questions ou si vous avez besoin d'aide supplémentaire, n'hésitez pas à demander !
-User
-inclut le dans ce fichier:
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-name: nginx-deployment
-spec:
-replicas: 1
-selector:
-matchLabels:
-app: nginx
-template:
-metadata:
-labels:
-app: nginx
-spec:
-containers: - name: nginx
-image: nginx:latest
-ports: - containerPort: 80
-volumeMounts: - name: nginx-config-volume
-mountPath: /etc/nginx/nginx.conf
-subPath: nginx.conf
-volumes: - name: nginx-config-volume
-configMap:
-name: nginx-config
-ChatGPT
-Voici le fichier YAML modifié pour inclure également le volume et le montage du ConfigMap :
 
 ```yaml
 apiVersion: apps/v1
@@ -426,15 +337,16 @@ spec:
             secretName: nginx-secret
 ```
 
-Avec cette modification, le fichier YAML inclut à la fois la référence au volume et au montage du ConfigMap ainsi que la référence au volume et au montage du Secret. Cela permettra au pod NGINX d'accéder aux paramètres de configuration depuis le ConfigMap et aux identifiants d'accès à la base de données depuis le Secret.
+2. Appliquez cette nouvelle configuration du déploiement en utilisant la commande `kubectl apply -f nginx-deployment.yaml`.
 
-Assurez-vous de remplacer `<base64_encoded_username>` et `<base64_encoded_password>` par les valeurs encodées en base64 de votre nom d'utilisateur et de votre mot de passe respectivement dans le fichier de secret. Et assurez-vous que le chemin de montage (`mountPath`) est correctement configuré selon les besoins de votre application.
+Dans cette configuration, le fichier YAML inclut à la fois la référence au volume et au montage du ConfigMap ainsi que la référence au volume et au montage du Secret. Cela permettra au pod NGINX d'accéder aux paramètres de configuration depuis le ConfigMap et aux identifiants d'accès à la base de données depuis le Secret.
 
-N'hésitez pas à me poser d'autres questions si nécessaire !
-User
-Ah donc mes secrets sont également considéré comme des volumes ?
-ChatGPT
-Oui, exactement ! Dans Kubernetes, les secrets sont traités comme des volumes spéciaux. Lorsque vous référencez un secret dans la spécification d'un pod, Kubernetes crée un volume contenant les données du secret et monte ce volume dans le conteneur du pod. Cela permet à votre application d'accéder aux données sensibles du secret comme si elles étaient des fichiers normaux sur le système de fichiers du conteneur.
+Avec cette configuration, Kubernetes montera automatiquement les données du Secret en tant que fichier dans le conteneur NGINX. Ainsi, votre application NGINX pourra accéder aux identifiants d'accès à la base de données de manière sécurisée sans avoir à incorporer directement ces informations dans l'image du conteneur.
+
+Assurez-vous d'ajuster le chemin de montage (`mountPath`) selon les besoins de votre application pour que les fichiers du Secret soient accessibles depuis votre conteneur NGINX.
+
+**Secrets sont comme des volumes**
+Dans Kubernetes, les secrets sont traités comme des volumes spéciaux. Lorsque vous référencez un secret dans la spécification d'un pod, Kubernetes crée un volume contenant les données du secret et monte ce volume dans le conteneur du pod. Cela permet à votre application d'accéder aux données sensibles du secret comme si elles étaient des fichiers normaux sur le système de fichiers du conteneur.
 
 En incluant le secret dans la section `volumes` de la spécification du pod et en ajoutant un `volumeMount` pour le conteneur, vous pouvez spécifier où les données du secret doivent être montées dans le système de fichiers du conteneur.
 
