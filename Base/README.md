@@ -34,7 +34,7 @@ kubectl version --client
 
 Dans cette étape, nous allons apprendre à déployer une application sur votre cluster Kubernetes local. Nous commencerons par créer un simple déploiement pour exécuter une application conteneurisée. Ensuite, nous explorerons la création d'un service pour exposer cette application et permettre son accès depuis l'extérieur.
 
-### 1. Créer un déploiement Kubernetes :
+### Créer un déploiement Kubernetes :
 
 Pour commencer, nous allons créer un déploiement pour exécuter une application conteneurisée. Nous utiliserons kubectl pour définir et créer ce déploiement.
 
@@ -66,7 +66,7 @@ spec:
 3. Vérifiez que le déploiement a été créé en utilisant la commande `kubectl get deployments`.
 4. Vérifiez que les pods associés au déploiement sont en cours d'exécution avec la commande `kubectl get pods`.
 
-Explication :
+**Explication**
 Un déploiement dans Kubernetes est une ressource qui gère le déploiement et la mise à l'échelle d'applications conteneurisées. Il définit l'état désiré de l'application et assure que le nombre spécifié de répliques (ou instances) de l'application est toujours en cours d'exécution.
 
 Dans notre exercice, nous avons créé un déploiement pour l'application NGINX. Voici une explication de chaque partie du fichier YAML `nginx-deployment.yaml` que nous avons utilisé :
@@ -81,7 +81,7 @@ Dans notre exercice, nous avons créé un déploiement pour l'application NGINX.
     - `metadata` : Les labels associés aux pods.
     - `spec` : La spécification du conteneur à exécuter dans les pods, y compris l'image Docker à utiliser et les ports exposés.
 
-#### 2. Créer un service Kubernetes :
+### Créer un service Kubernetes
 
 Maintenant que notre déploiement est opérationnel, nous allons créer un service pour exposer notre application et permettre son accès depuis l'extérieur.
 
@@ -108,6 +108,7 @@ spec:
    Le service est accessible via le port 32548 sur l'adresse IP de votre machine hôte.
 4. Notez le port NodePort attribué au service pour accéder à l'application.
 
+**Explication**
 Un service dans Kubernetes est une ressource qui définit un ensemble de pods et une politique d'accès à ces pods. Il fournit une adresse IP et un nom DNS stable pour accéder aux pods du déploiement, ainsi qu'une fonctionnalité de load balancing si plusieurs pods sont disponibles.
 
 Dans notre exercice, nous avons créé un service pour exposer notre déploiement NGINX à l'extérieur du cluster Kubernetes. Voici une explication de chaque partie du fichier YAML `nginx-service.yaml` :
@@ -122,9 +123,10 @@ Dans notre exercice, nous avons créé un service pour exposer notre déploiemen
 
 En résumé, un déploiement gère le déploiement et la mise à l'échelle des applications, tandis qu'un service permet d'accéder à ces applications en fournissant une adresse IP et une politique d'accès stable. Le service permet également de faire du load balancing si nécessaire.
 
-### Étape 3 : Gestion avancée de Kubernetes
+## Étape 3 : Gestion avancée de Kubernetes
 
-**AutoScaling** :
+### AutoScaling
+
 Le scaling automatique dans Kubernetes permet d'ajuster dynamiquement le nombre de répliques de vos applications en fonction de la charge de travail. Cela garantit que vos applications ont suffisamment de ressources pour gérer le trafic entrant, tout en optimisant l'utilisation des ressources disponibles.
 
 1.  Créez un fichier YAML nommé `nginx-autoscale.yaml` avec le contenu suivant :
@@ -147,6 +149,7 @@ spec:
 2. Appliquez ce fichier YAML en utilisant la commande `kubectl apply -f nginx-autoscale.yaml`.
 3. Vérifiez que l'autoscaler a été créé en utilisant la commande `kubectl get hpa`.
 
+**Explication**
 Dans ce fichier YAML, nous avons configuré un HorizontalPodAutoscaler (HPA) qui surveille la charge CPU des pods de notre déploiement NGINX et ajuste dynamiquement le nombre de répliques pour maintenir la charge CPU en dessous de 50%. Voici ce que chaque partie du fichier YAML signifie :
 
 - `apiVersion` : La version de l'API Kubernetes utilisée pour définir l'HPA.
@@ -160,12 +163,12 @@ Dans ce fichier YAML, nous avons configuré un HorizontalPodAutoscaler (HPA) qui
 
 Avec cette configuration, Kubernetes ajustera automatiquement le nombre de répliques de votre déploiement NGINX en fonction de la charge CPU, garantissant ainsi que vos applications ont suffisamment de ressources pour gérer le trafic entrant, tout en optimisant l'utilisation des ressources disponibles.
 
-Vérification de l'Autoscaling :
+**Vérification de l'Autoscaling**
 
 1. Surveiller les événements de l'Autoscaler :
    Utilisez la commande `kubectl describe hpa nginx-autoscaler` pour afficher les détails de l'Autoscaler, y compris les événements récents. Cela vous permettra de voir si l'Autoscaler a effectué des ajustements en réponse à la charge de travail.
 
-**Mise à Jour Rolling** :
+### Mise à Jour Rolling
 
 La mise à jour rolling dans Kubernetes permet de mettre à jour vos applications sans temps d'arrêt en remplaçant progressivement les anciennes répliques par les nouvelles. Cela garantit que votre application reste disponible pendant le processus de mise à jour.
 
@@ -181,7 +184,7 @@ La mise à jour rolling dans Kubernetes est une fonctionnalité native qui est i
 
 Lorsque vous effectuez une mise à jour du déploiement en modifiant la spécification du déploiement (par exemple, en mettant à jour la version de l'image Docker), Kubernetes déclenche automatiquement le processus de mise à jour rolling. Le contrôleur de déploiement compare la spécification actuelle du déploiement avec la nouvelle spécification et met en œuvre les modifications nécessaires pour atteindre l'état désiré.
 
-Voici comment fonctionne le processus de mise à jour rolling :
+**Explication**
 
 1. Kubernetes crée de nouveaux pods avec la nouvelle spécification du déploiement (par exemple, la nouvelle version de l'image Docker).
 2. Le contrôleur de déploiement augmente progressivement le nombre de nouveaux pods tout en réduisant le nombre de pods de l'ancienne spécification. Il s'assure que le nombre total de répliques reste constant pendant tout le processus.
@@ -191,16 +194,12 @@ Ce processus garantit que votre application reste disponible pendant toute la du
 
 L'Autoscaler horizontal (HPA) est utilisé pour ajuster automatiquement le nombre de répliques en fonction de la charge de travail, mais il n'intervient pas dans le processus de mise à jour rolling en lui-même. C'est le contrôleur de déploiement de Kubernetes qui gère ce processus de manière autonome.
 
-2. **Configuration et Sécrets** :
-   - Comprendre la gestion des configurations et des secrets dans Kubernetes.
-   - Exercice : Utilisez les secrets Kubernetes pour stocker des informations sensibles comme les mots de passe ou les clés d'API.
+## Configuration et Secrets
+
+- Comprendre la gestion des configurations et des secrets dans Kubernetes.
+- Exercice : Utilisez les secrets Kubernetes pour stocker des informations sensibles comme les mots de passe ou les clés d'API.
 
 ----------------------------------------------------- À TRAITER ------------------------------------------
-
-User
-Donne moi le code pour létape sur les configurations
-ChatGPT
-Bien sûr ! Voici comment vous pouvez créer une configuration Kubernetes pour stocker des paramètres de configuration pour votre application NGINX :
 
 ### Configuration Kubernetes pour les Paramètres de Configuration :
 
